@@ -1,0 +1,145 @@
+{
+  "title": "NOC Engineer Application Form",
+  "questions": [
+    {
+      "groupTitle": "Personal Information",
+      "questions": [
+        {
+          "id": "fullName",
+          "text": "Full Name",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "email",
+          "text": "Email Address",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "phoneNumber",
+          "text": "Phone Number",
+          "type": "text",
+          "required": true
+        }
+      ]
+    },
+    {
+      "groupTitle": "Work Experience",
+      "questions": [
+        {
+          "id": "totalExperience",
+          "text": "How many years of total work experience do you have?",
+          "type": "number",
+          "required": true
+        },
+        {
+          "id": "nocExperience",
+          "text": "How many years of experience do you have as a NOC Engineer?",
+          "type": "number",
+          "required": true
+        },
+        {
+          "id": "technology",
+          "text": "Which technology have you worked with most extensively in your previous roles?",
+          "type": "text",
+          "required": true
+        }
+      ]
+    },
+    {
+      "groupTitle": "Location Preferences",
+      "questions": [
+        {
+          "id": "currentState",
+          "text": "Which State in India are you currently located? (State)",
+          "type": "select",
+          "required": true
+        },
+        {
+          "id": "currentCity",
+          "text": "Which city are you staying currently? (City)",
+          "type": "select",
+          "required": true
+        },
+        {
+          "id": "workPreference",
+          "text": "What is your preference for working?",
+          "type": "select",
+          "options": ["Remote", "On-site", "Hybrid"],
+          "required": true
+        },
+        {
+          "id": "preferredLocation",
+          "text": "Which location do you prefer for working?",
+          "type": "text",
+          "required": true
+        }
+      ]
+    },
+    {
+      "groupTitle": "Compensation",
+      "questions": [
+        {
+          "id": "currentCompensation",
+          "text": "What is your current total compensation package (including salary and benefits)?",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "expectedSalary",
+          "text": "What are your salary expectations for this position?",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "otherOffers",
+          "text": "Do you currently have any other job offers?",
+          "type": "radio",
+          "options": ["Yes", "No"],
+          "required": true
+        },
+        {
+          "id": "otherOffersSalary",
+          "text": "If yes, what is the approximate salary range of the other offer(s)?",
+          "type": "text",
+          "conditional": {
+            "dependsOn": "otherOffers",
+            "showIf": "Yes"
+          }
+        }
+      ]
+    },
+    {
+      "groupTitle": "Availability and Work Preferences",
+      "questions": [
+        {
+          "id": "noticePeriod",
+          "text": "How much notice period do you currently have?",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "negotiateNoticePeriod",
+          "text": "Are you open to negotiating your notice period with your current employer if necessary?",
+          "type": "radio",
+          "options": ["Yes", "No"],
+          "required": true
+        },
+        {
+          "id": "expectedLastDay",
+          "text": "What is your expected last working day if you are putting down notice with your current employer?",
+          "type": "date",
+          "required": true
+        },
+        {
+          "id": "sixDayWeek",
+          "text": "Are you open to working a 6-day workweek, if required by the position?",
+          "type": "radio",
+          "options": ["Yes", "No"],
+          "required": true
+        }
+      ]
+    }
+  ]
+}

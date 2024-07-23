@@ -1,7 +1,6 @@
 // File: src/components/Sidebar.js
-// Date modified: 2024-07-15
+// Date modified: 2024-07-22
 // Description: Sidebar component for the Analytics Dashboard
-//
 // This component renders a responsive sidebar with navigation items.
 // It supports both mobile and desktop layouts, with a toggle functionality for mobile view.
 //
@@ -10,6 +9,7 @@
 //   - setIsOpen: Function to update the isOpen state
 //
 // Components:
+//   - MenuItem: Renders a single menu item, which can be either a link or a dropdown
 //   - Sidebar: The main sidebar component
 //
 // Helper constants:
@@ -77,12 +77,8 @@ const menuItems = [
   },
   {
     name: "Generate Forms",
-    icon: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z",
-    subItems: [
-      { name: "Simple", path: "/DynamicForm" },
-      { name: "TypeForm", path: "/TypeformStyle" },
-      { name: "ConversationalForm", path: "/jd/closed" },
-    ],
+    icon: "M12 4v16m8-8H4",
+    path: "/create-forms",
   },
 ];
 

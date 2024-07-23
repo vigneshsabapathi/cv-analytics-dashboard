@@ -1,6 +1,7 @@
 // File: src/App.js
-// Date modified: 2024-07-22
+// Date modified: 2024-07-23
 // Description: Main App component for the Analytics Dashboard and Dynamic Form
+// This component sets up the routing and overall layout for the application.
 
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
@@ -21,13 +22,21 @@ import WebSource from "./components/WebSource";
 import Analytics from "./components/Analytics";
 import DynamicForm from "./components/DynamicForm";
 import TypeformStyle from "./components/TypeformStyle";
+import CreateForms from "./components/CreateForms";
+import FormGenerator from "./components/FormGenerator";
+import ShareableForm from "./components/ShareableForm";
 
 function App() {
+  // State to control sidebar visibility on mobile
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  // State to store form data fetched from API
   const [formData, setFormData] = useState(null);
+  // State to indicate loading status
   const [loading, setLoading] = useState(true);
+  // State to store any error messages
   const [error, setError] = useState(null);
 
+  // Effect to fetch form data from API on component mount
   useEffect(() => {
     const fetchFormData = async () => {
       try {
@@ -44,6 +53,7 @@ function App() {
     fetchFormData();
   }, []);
 
+  // Function to handle form submission
   const handleSubmit = async (formData) => {
     try {
       const response = await axios.post(
@@ -95,6 +105,12 @@ function App() {
                   }
                 />
                 <Route path="/TypeformStyle" element={<TypeformStyle />} />
+                <Route path="/create-forms/*" element={<CreateForms />} />
+                <Route
+                  path="/create-forms/:type/:templateId"
+                  element={<FormGenerator />}
+                />
+                <Route path="/share-form/:type" element={<ShareableForm />} />
               </Routes>
             )}
           </main>
