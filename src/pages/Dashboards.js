@@ -178,8 +178,145 @@ const Dashboard = () => {
 
   const renderRevenueContent = () => (
     <div className="grid grid-cols-3 gap-6">
-      {/* Revenue content components */}
-      {/* ... (Include the revenue charts and data as before) */}
+      <div className="col-span-2 bg-white rounded-lg shadow p-4">
+        <h3 className="text-lg font-semibold mb-2 flex items-center">
+          <ChartPieIcon className="w-5 h-5 mr-2" />
+          Income
+        </h3>
+        <Line
+          data={{
+            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+            datasets: [
+              {
+                data: [12000, 19000, 15000, 17000, 22000, 18000],
+                fill: true,
+                backgroundColor: "rgba(59, 130, 246, 0.2)",
+                borderColor: "rgba(59, 130, 246, 1)",
+              },
+            ],
+          }}
+          options={{
+            responsive: true,
+            plugins: { legend: { display: false } },
+          }}
+        />
+      </div>
+      <div className="bg-white rounded-lg shadow p-4">
+        <h3 className="text-lg font-semibold mb-2 flex items-center">
+          <CurrencyDollarIcon className="w-5 h-5 mr-2" />
+          Balance
+        </h3>
+        <p className="text-4xl font-bold text-blue-600">$ 15,000</p>
+        <button className="text-blue-500 text-sm mt-2">see history</button>
+      </div>
+      <div className="bg-white rounded-lg shadow p-4">
+        <h3 className="text-lg font-semibold mb-2 flex items-center">
+          <ArrowTrendingUpIcon className="w-5 h-5 mr-2" />
+          Growth
+        </h3>
+        <Bar
+          data={{
+            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+            datasets: [
+              {
+                data: [65, 59, 80, 81, 56, 55],
+                backgroundColor: "rgba(59, 130, 246, 0.6)",
+              },
+            ],
+          }}
+          options={{
+            responsive: true,
+            plugins: { legend: { display: false } },
+          }}
+        />
+      </div>
+      <div className="bg-white rounded-lg shadow p-4">
+        <h3 className="text-lg font-semibold mb-2 flex items-center">
+          <CreditCardIcon className="w-5 h-5 mr-2" />
+          Expense
+        </h3>
+        <div className="flex justify-around">
+          {[80, 75, 50].map((value, index) => (
+            <div key={index} className="relative w-20 h-20">
+              <Doughnut
+                data={{
+                  datasets: [
+                    {
+                      data: [value, 100 - value],
+                      backgroundColor: ["#3B82F6", "#E5E7EB"],
+                    },
+                  ],
+                }}
+                options={{
+                  cutout: "70%",
+                  responsive: true,
+                  plugins: { legend: { display: false } },
+                }}
+              />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-lg font-semibold">{value}%</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="bg-white rounded-lg shadow p-4">
+        <h3 className="text-lg font-semibold mb-2 flex items-center">
+          <ChartPieIcon className="w-5 h-5 mr-2" />
+          Most Viewed Item
+        </h3>
+        {["Item 01", "Item 02", "Item 03", "Item 04"].map((item, index) => (
+          <div key={index} className="flex justify-between items-center mb-2">
+            <span>{item}</span>
+            <button className="bg-blue-500 text-white px-2 py-1 rounded text-xs">
+              BOOST
+            </button>
+          </div>
+        ))}
+      </div>
+      <div className="col-span-2 bg-white rounded-lg shadow p-4">
+        <h3 className="text-lg font-semibold mb-2 flex items-center">
+          <DocumentTextIcon className="w-5 h-5 mr-2" />
+          Invoices
+        </h3>
+        {[...Array(6)].map((_, index) => (
+          <div key={index} className="flex justify-between items-center mb-2">
+            <span>Invoice {index + 1}/November/1234/5/0</span>
+            <button className="bg-blue-500 text-white px-2 py-1 rounded text-xs">
+              PAID
+            </button>
+          </div>
+        ))}
+      </div>
+      <div className="bg-white rounded-lg shadow p-4">
+        <h3 className="text-lg font-semibold mb-2 flex items-center">
+          <ChatBubbleLeftRightIcon className="w-5 h-5 mr-2" />
+          Message
+        </h3>
+        {[
+          {
+            name: "Johnson, Mark",
+            subject: "Invoice November",
+            status: "Status Update: Success",
+          },
+          {
+            name: "Adelia, Nadia",
+            subject: "Project Assignment",
+            status: "Presentation Material",
+          },
+          {
+            name: "Amelia, Laura",
+            subject: "Meeting Schedule",
+            status: "Project: interior design",
+          },
+        ].map((message, index) => (
+          <div key={index} className="mb-2">
+            <p className="font-semibold">{message.name}</p>
+            <p className="text-sm text-gray-600">{message.subject}</p>
+            <p className="text-sm text-gray-500">{message.status}</p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 

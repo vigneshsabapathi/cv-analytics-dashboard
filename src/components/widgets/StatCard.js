@@ -1,4 +1,4 @@
-// File: src/components/Dashboard/widgets/StatCard.js
+// File: src/components/widgets/StatCard.js
 // Date modified: 2024-07-17
 // Description: StatCard component for displaying key statistics
 //

@@ -1,219 +1,380 @@
 // File: src/components/Sidebar.js
-// Date modified: 2024-07-22
-// Description: Sidebar component for the Analytics Dashboard
-// This component renders a responsive sidebar with navigation items.
-// It supports both mobile and desktop layouts, with a toggle functionality for mobile view.
-//
-// Props:
-//   - isOpen: Boolean indicating whether the sidebar is open in mobile view
-//   - setIsOpen: Function to update the isOpen state
-//
-// Components:
-//   - MenuItem: Renders a single menu item, which can be either a link or a dropdown
-//   - Sidebar: The main sidebar component
-//
-// Helper constants:
-//   - menuItems: An array of objects representing the navigation items
+// Date modified: 2024-07-31
+// Description: Sidebar component for the application
+// This component renders a collapsible sidebar with navigation items,
+// Team Space functionality, and popup menus for additional options.
+// The popup menus are positioned above the click point for better visibility.
 
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { XMarkIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
-
-// Navigation menu items
-const menuItems = [
-  {
-    name: "Dashboard",
-    icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6",
-    path: "/",
-  },
-  {
-    name: "Master Data",
-    icon: "M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10",
-    path: "/master-data",
-  },
-  {
-    name: "JD",
-    icon: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z",
-    subItems: [
-      { name: "Open", path: "/jd/open" },
-      { name: "InProgress", path: "/jd/in-progress" },
-      { name: "Closed", path: "/jd/closed" },
-    ],
-  },
-  {
-    name: "Domain",
-    icon: "M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9",
-    path: "/domain",
-  },
-  {
-    name: "Data Source",
-    icon: "M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4",
-    path: "/data-source",
-  },
-  {
-    name: "Cloud Storage",
-    icon: "M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12",
-    path: "/cloud-storage",
-  },
-  {
-    name: "Local Storage",
-    icon: "M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4",
-    path: "/local-storage",
-  },
-  {
-    name: "LinkedIn",
-    icon: "M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z",
-    path: "/linkedin",
-  },
-  {
-    name: "WebSource",
-    icon: "M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9",
-    path: "/websource",
-  },
-  {
-    name: "Analytics",
-    icon: "M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z",
-    path: "/analytics",
-  },
-  {
-    name: "Generate Forms",
-    icon: "M12 4v16m8-8H4",
-    path: "/create-forms",
-  },
-];
+import {
+  AiOutlineHome,
+  AiOutlineFile,
+  AiOutlineDashboard,
+  AiOutlineCloudUpload,
+  AiOutlinePlus,
+  AiFillFolderAdd,
+  AiFillLinkedin,
+  AiOutlineSetting,
+  AiOutlineUserAdd,
+  AiOutlineQuestionCircle,
+  AiOutlineOrderedList,
+  AiOutlineForm,
+  AiOutlineEdit,
+  AiOutlineFolder,
+  AiOutlineImport,
+  AiOutlineFileExcel,
+  AiOutlineFileText,
+  AiOutlineAppstore,
+} from "react-icons/ai";
 
 /**
- * MenuItem Component
- *
- * Renders a single menu item, which can be either a link or a dropdown
- *
+ * Sidebar component
  * @param {Object} props - Component props
- * @param {Object} props.item - The menu item object
- * @param {function} props.setIsOpen - Function to set the sidebar open state
- * @returns {React.ReactElement} Rendered MenuItem component
+ * @param {boolean} props.collapsed - Whether the sidebar is collapsed
+ * @returns {JSX.Element} Rendered Sidebar component
  */
-const MenuItem = ({ item, setIsOpen }) => {
-  const [isOpen, setIsItemOpen] = React.useState(false);
+const Sidebar = ({ collapsed }) => {
+  // State for expanded menu items
+  const [expandedItems, setExpandedItems] = useState({});
+  // State for Team Space menu visibility
+  const [showTeamSpaceMenu, setShowTeamSpaceMenu] = useState(false);
+  // State for Import menu visibility
+  const [showImportMenu, setShowImportMenu] = useState(false);
+  // State for Team Space menu position
+  const [teamSpaceMenuPosition, setTeamSpaceMenuPosition] = useState({
+    top: 0,
+    left: 0,
+  });
+  // State for Import menu position
+  const [importMenuPosition, setImportMenuPosition] = useState({
+    top: 0,
+    left: 0,
+  });
 
-  if (item.subItems) {
-    return (
-      <div>
-        <button
-          className="flex items-center justify-between w-full px-4 py-2 text-gray-100 hover:bg-blue-700"
-          onClick={() => setIsItemOpen(!isOpen)}
-        >
-          <div className="flex items-center">
-            <svg
-              className="w-6 h-6 mr-3"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
+  // Refs for handling click outside of menus
+  const sidebarRef = useRef(null);
+  const teamSpaceMenuRef = useRef(null);
+  const importMenuRef = useRef(null);
+  const teamSpaceButtonRef = useRef(null);
+
+  // Effect for handling clicks outside of menus
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        teamSpaceMenuRef.current &&
+        !teamSpaceMenuRef.current.contains(event.target) &&
+        !teamSpaceButtonRef.current.contains(event.target)
+      ) {
+        setShowTeamSpaceMenu(false);
+      }
+      if (
+        importMenuRef.current &&
+        !importMenuRef.current.contains(event.target)
+      ) {
+        setShowImportMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  /**
+   * Handles click on Team Space button
+   * Updates menu position and toggles visibility
+   * @param {React.MouseEvent} event - The click event
+   */
+  const handleTeamSpaceClick = (event) => {
+    event.preventDefault();
+    const sidebarRect = sidebarRef.current.getBoundingClientRect();
+    const buttonRect = event.currentTarget.getBoundingClientRect();
+
+    const top = buttonRect.top - sidebarRect.top - 200; // 200px above click point
+    const left = buttonRect.right - sidebarRect.left + 10; // 10px to the right of the button
+
+    setTeamSpaceMenuPosition({ top, left });
+    setShowTeamSpaceMenu(!showTeamSpaceMenu);
+  };
+
+  /**
+   * Handles click on Import menu item
+   * Updates menu position and toggles visibility
+   * @param {React.MouseEvent} event - The click event
+   */
+  const handleImportClick = (event) => {
+    event.stopPropagation();
+    const menuItemRect = event.currentTarget.getBoundingClientRect();
+    const sidebarRect = sidebarRef.current.getBoundingClientRect();
+
+    const top = menuItemRect.top - sidebarRect.top - 100; // 100px above click point
+    const left = menuItemRect.right - sidebarRect.left + 10; // 10px to the right of the menu item
+
+    setImportMenuPosition({ top, left });
+    setShowImportMenu(!showImportMenu);
+  };
+
+  // Main menu items
+  const mainMenuItems = [
+    { icon: AiOutlineHome, text: "Dashboard", path: "/" },
+    { icon: AiOutlineFile, text: "Master Data", path: "/master-data" },
+    {
+      icon: AiOutlineFile,
+      text: "JD",
+      path: "/jd",
+      subItems: [
+        { text: "Open", path: "/jd/open" },
+        { text: "In Progress", path: "/jd/in-progress" },
+        { text: "Closed", path: "/jd/closed" },
+      ],
+    },
+    { icon: AiOutlineDashboard, text: "Domain", path: "/domain" },
+    { icon: AiOutlineFile, text: "Data Source", path: "/data-source" },
+    {
+      icon: AiOutlineCloudUpload,
+      text: "Cloud Storage",
+      path: "/cloud-storage",
+    },
+    { icon: AiFillFolderAdd, text: "Local Storage", path: "/local-storage" },
+    { icon: AiFillLinkedin, text: "LinkedIn", path: "/linkedin" },
+    { icon: AiOutlineFile, text: "WebSource", path: "/websource" },
+    { icon: AiOutlineFile, text: "Analytics", path: "/analytics" },
+    {
+      icon: AiOutlineFile,
+      text: "Create Forms",
+      path: "/create-forms",
+      // subItems: [
+      //   { text: "Vertical Form", path: "/create-forms/vertical" },
+      //   { text: "Typeform Style", path: "/create-forms/typeform" },
+      //   { text: "Conversational Form", path: "/create-forms/conversational" },
+      // ],
+    },
+  ];
+
+  /**
+   * Toggles the expanded state of a menu item
+   * @param {string} itemText - The text of the menu item to toggle
+   */
+  const toggleExpand = (itemText) => {
+    setExpandedItems((prev) => ({
+      ...prev,
+      [itemText]: !prev[itemText],
+    }));
+  };
+
+  /**
+   * Renders a menu item
+   * @param {Object} item - Menu item object
+   * @param {number} index - Index of the menu item
+   * @returns {JSX.Element} Rendered menu item
+   */
+  const renderMenuItem = (item, index) => (
+    <div key={index}>
+      <Link
+        to={item.path}
+        className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-200"
+        onClick={() => item.subItems && toggleExpand(item.text)}
+      >
+        <item.icon className="w-5 h-5 mr-3" />
+        {!collapsed && <span>{item.text}</span>}
+        {!collapsed && item.subItems && <AiOutlinePlus className="ml-auto" />}
+      </Link>
+      {item.subItems && expandedItems[item.text] && !collapsed && (
+        <div className="ml-4">
+          {item.subItems.map((subItem, subIndex) => (
+            <Link
+              key={subIndex}
+              to={subItem.path}
+              className="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-200"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d={item.icon}
-              />
-            </svg>
-            {item.name}
-          </div>
-          <ChevronDownIcon
-            className={`w-5 h-5 transition-transform ${
-              isOpen ? "transform rotate-180" : ""
-            }`}
-          />
-        </button>
-        {isOpen && (
-          <div className="pl-8">
-            {item.subItems.map((subItem, index) => (
-              <Link
-                key={index}
-                to={subItem.path}
-                className="block px-4 py-2 text-sm text-gray-300 hover:bg-blue-700"
-                onClick={() => setIsOpen(false)}
-              >
-                {subItem.name}
-              </Link>
-            ))}
-          </div>
-        )}
-      </div>
-    );
-  }
-
-  return (
-    <Link
-      to={item.path}
-      className="flex items-center px-4 py-2 text-gray-100 hover:bg-blue-700"
-      onClick={() => setIsOpen(false)}
-    >
-      <svg
-        className="w-6 h-6 mr-3"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d={item.icon}
-        />
-      </svg>
-      {item.name}
-    </Link>
-  );
-};
-
-/**
- * Sidebar Component
- *
- * @param {Object} props - Component props
- * @param {boolean} props.isOpen - Indicates if the sidebar is open on mobile
- * @param {function} props.setIsOpen - Function to set the isOpen state
- * @returns {React.ReactElement} Rendered Sidebar component
- */
-const Sidebar = ({ isOpen, setIsOpen }) => {
-  return (
-    <React.Fragment>
-      {/* Main sidebar container */}
-      <div
-        className={`fixed inset-y-0 left-0 z-30 w-64 bg-blue-600 text-white transition duration-300 transform ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
-        } lg:translate-x-0 lg:static lg:inset-0`}
-      >
-        {/* Sidebar header */}
-        <div className="flex items-center justify-between h-16 px-6 bg-blue-700">
-          <span className="text-2xl font-semibold">Dashboard</span>
-          <button
-            className="p-1 lg:hidden"
-            onClick={() => setIsOpen(false)}
-            aria-label="Close sidebar"
-          >
-            <XMarkIcon className="w-6 h-6" />
-          </button>
-        </div>
-
-        {/* Navigation menu */}
-        <nav className="mt-4">
-          {menuItems.map((item, index) => (
-            <MenuItem key={index} item={item} setIsOpen={setIsOpen} />
+              {subItem.text}
+            </Link>
           ))}
-        </nav>
-      </div>
-
-      {/* Overlay for mobile view */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 z-20 bg-black opacity-50 lg:hidden"
-          onClick={() => setIsOpen(false)}
-          aria-hidden="true"
-        />
+        </div>
       )}
-    </React.Fragment>
+    </div>
+  );
+
+  /**
+   * MenuItem component for popup menus
+   * @param {Object} props - Component props
+   * @param {Function} props.icon - Icon component
+   * @param {string} props.text - Menu item text
+   * @param {Function} props.onClick - Click handler function
+   * @returns {JSX.Element} Rendered MenuItem component
+   */
+  const MenuItem = ({ icon: Icon, text, onClick }) => (
+    <div
+      className="flex items-center px-4 py-2 hover:bg-gray-200 cursor-pointer"
+      onClick={onClick}
+    >
+      <Icon className="mr-2" />
+      <span>{text}</span>
+    </div>
+  );
+
+  /**
+   * TeamSpaceMenu component
+   * @returns {JSX.Element} Rendered TeamSpaceMenu component
+   */
+  const TeamSpaceMenu = () => (
+    <div
+      ref={teamSpaceMenuRef}
+      className="absolute bg-white rounded-md shadow-lg z-10"
+      style={{
+        top: `${teamSpaceMenuPosition.top}px`,
+        left: `${teamSpaceMenuPosition.left}px`,
+        width: "200px",
+      }}
+    >
+      <MenuItem icon={AiOutlineOrderedList} text="List" />
+      <div className="border-t border-gray-200 my-2"></div>
+      <MenuItem icon={AiOutlineFile} text="Doc" />
+      <MenuItem icon={AiOutlineForm} text="Form" />
+      <MenuItem icon={AiOutlineEdit} text="Whiteboard" />
+      <div className="border-t border-gray-200 my-2"></div>
+      <MenuItem icon={AiOutlineFolder} text="Folder" />
+      <div className="border-t border-gray-200 my-2"></div>
+      <MenuItem icon={AiOutlineForm} text="Form template" />
+      <MenuItem
+        icon={AiOutlineImport}
+        text="Import      ->"
+        onClick={handleImportClick}
+      />
+    </div>
+  );
+
+  /**
+   * ImportMenu component
+   * @returns {JSX.Element} Rendered ImportMenu component
+   */
+  const ImportMenu = () => (
+    <div
+      ref={importMenuRef}
+      className="absolute bg-white rounded-md shadow-lg z-20"
+      style={{
+        top: `${importMenuPosition.top}px`,
+        left: `${importMenuPosition.left}px`,
+        width: "200px",
+      }}
+    >
+      <MenuItem icon={AiOutlineFileExcel} text="Spreadsheet files" />
+      <MenuItem icon={AiOutlineFileText} text="Document Files" />
+      <MenuItem icon={AiOutlineAppstore} text="Asana" />
+      <MenuItem icon={AiOutlineAppstore} text="Basecamp" />
+      <MenuItem icon={AiOutlineAppstore} text="Confluence" />
+      <MenuItem icon={AiOutlineAppstore} text="Jira" />
+      {/* <MenuItem icon={AiOutlineAppstore} text="Monday" />
+      <MenuItem icon={AiOutlineAppstore} text="Notion" />
+      <MenuItem icon={AiOutlineAppstore} text="Todoist" />
+      <MenuItem icon={AiOutlineAppstore} text="Trello" />
+      <MenuItem icon={AiOutlineAppstore} text="Wrike" /> */}
+    </div>
+  );
+
+  return (
+    <div
+      ref={sidebarRef}
+      className={`bg-white text-gray-800 flex flex-col h-screen ${
+        collapsed ? "w-16" : "w-64"
+      } transition-all duration-300 relative`}
+    >
+      <div className="flex-1 overflow-y-auto">
+        <div className="p-4">
+          <h1 className={`text-xl font-bold ${collapsed ? "hidden" : ""}`}>
+            TrustGrid
+          </h1>
+        </div>
+        {mainMenuItems.map(renderMenuItem)}
+        <div className="border-t border-gray-300 my-4"></div>
+        <div className="px-4 py-2 text-sm font-semibold text-gray-600">
+          Favorites
+        </div>
+        <div className="px-4 py-2 text-sm text-gray-600">Spaces</div>
+        <div className="px-4 py-2 text-sm font-semibold text-gray-600">
+          Everything
+        </div>
+        <div className="flex items-center justify-between px-4 py-2 text-sm font-semibold text-gray-600">
+          <span>Team Space</span>
+          {!collapsed && (
+            <button
+              ref={teamSpaceButtonRef}
+              className="focus:outline-none"
+              onClick={handleTeamSpaceClick}
+            >
+              <AiOutlinePlus className="w-4 h-4 cursor-pointer" />
+            </button>
+          )}
+        </div>
+        {showTeamSpaceMenu && <TeamSpaceMenu />}
+        {showImportMenu && <ImportMenu />}
+        <div className="ml-4">
+          <div className="flex items-center justify-between px-4 py-2 text-sm text-gray-600">
+            <span>Projects</span>
+            {!collapsed && <AiOutlinePlus className="w-4 h-4" />}
+          </div>
+          <Link
+            to="/project-2"
+            className="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-200"
+          >
+            Project 2
+          </Link>
+          <Link
+            to="/project-1"
+            className="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-200"
+          >
+            Project 1
+          </Link>
+          <Link
+            to="/project-notes"
+            className="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-200"
+          >
+            Project Notes
+          </Link>
+        </div>
+        <Link
+          to="/view-spaces"
+          className="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-200"
+        >
+          View all Spaces
+        </Link>
+        <Link
+          to="/create-space"
+          className="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-200"
+        >
+          + Create Space
+        </Link>
+      </div>
+      <div className="border-t border-gray-300 py-2">
+        <Link
+          to="/settings"
+          className="flex items-center px-4 py-2 text-sm text-gray-600 hover:bg-gray-200"
+        >
+          <AiOutlineSetting className="w-5 h-5 mr-3" />
+          {!collapsed && <span>Settings</span>}
+        </Link>
+        <div className="border-t border-gray-200 my-2"></div>
+        <div className="flex justify-around items-center px-4 py-2">
+          <Link
+            to="/invite"
+            className="flex items-center text-sm text-gray-600 hover:text-gray-800"
+          >
+            <AiOutlineUserAdd className="w-5 h-5 mr-1" />
+            {!collapsed && <span>Invite</span>}
+          </Link>
+          {!collapsed && <span className="text-gray-300">|</span>}
+          <Link
+            to="/help"
+            className="flex items-center text-sm text-gray-600 hover:text-gray-800"
+          >
+            <AiOutlineQuestionCircle className="w-5 h-5 mr-1" />
+            {!collapsed && <span>Help</span>}
+          </Link>
+        </div>
+      </div>
+    </div>
   );
 };
 
