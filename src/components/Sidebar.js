@@ -11,10 +11,7 @@ import {
   AiOutlineHome,
   AiOutlineFile,
   AiOutlineDashboard,
-  AiOutlineCloudUpload,
   AiOutlinePlus,
-  AiFillFolderAdd,
-  AiFillLinkedin,
   AiOutlineSetting,
   AiOutlineUserAdd,
   AiOutlineQuestionCircle,
@@ -118,38 +115,69 @@ const Sidebar = ({ collapsed }) => {
 
   // Main menu items
   const mainMenuItems = [
-    { icon: AiOutlineHome, text: "Dashboard", path: "/" },
-    { icon: AiOutlineFile, text: "Master Data", path: "/master-data" },
+    { icon: AiOutlineHome, text: "Home", path: "/" },
     {
       icon: AiOutlineFile,
-      text: "JD",
-      path: "/jd",
+      text: "Master Data",
+      path: "/master-data",
       subItems: [
-        { text: "Open", path: "/jd/open" },
-        { text: "In Progress", path: "/jd/in-progress" },
-        { text: "Closed", path: "/jd/closed" },
+        { text: "Domain", path: "/domain" },
+        { text: "CV", path: "/cv" },
       ],
     },
-    { icon: AiOutlineDashboard, text: "Domain", path: "/domain" },
-    { icon: AiOutlineFile, text: "Data Source", path: "/data-source" },
     {
-      icon: AiOutlineCloudUpload,
-      text: "Cloud Storage",
-      path: "/cloud-storage",
+      icon: AiOutlineFile,
+      text: "Data sources",
+      path: "/data-sources",
+      subItems: [
+        { text: "Storage", path: "/storage" },
+        { text: "Internet data sources", path: "/cloud-storage" },
+      ],
     },
-    { icon: AiFillFolderAdd, text: "Local Storage", path: "/local-storage" },
-    { icon: AiFillLinkedin, text: "LinkedIn", path: "/linkedin" },
-    { icon: AiOutlineFile, text: "WebSource", path: "/websource" },
-    { icon: AiOutlineFile, text: "Analytics", path: "/analytics" },
+    {
+      icon: AiOutlineDashboard,
+      text: "Pipeline management",
+      path: "/pipeline-management",
+      subItems: [
+        { text: "Candidate Pipeline", path: "/candidate" },
+        { text: "CV Pipeline", path: "/cv-analytics" },
+        { text: "JD Pipeline", path: "/master-data/jd" },
+      ],
+    },
+    {
+      icon: AiOutlineFile,
+      text: "Integrations",
+      path: "/integrations",
+      subItems: [
+        { text: "LinkedIn", path: "/linkedin" },
+        { text: "Naukri", path: "/naukri" },
+        { text: "Zoho", path: "/zoho" },
+        { text: "Workday", path: "/workday" },
+      ],
+    },
+    {
+      icon: AiOutlineFile,
+      text: "Analytics",
+      path: "/analytics",
+      subItems: [
+        { text: "Analytics 1", path: "/analytics-1" },
+        { text: "Analytics 2", path: "/analytics-2" },
+        { text: "Analytics 3", path: "/analytics-3" },
+      ],
+    },
+    {
+      icon: AiOutlineFile,
+      text: "Engagements",
+      path: "/engagements",
+      subItems: [
+        { text: "Clients", path: "/clients" },
+        { text: "Orgs", path: "/orgs" },
+      ],
+    },
     {
       icon: AiOutlineFile,
       text: "Create Forms",
       path: "/create-forms",
-      // subItems: [
-      //   { text: "Vertical Form", path: "/create-forms/vertical" },
-      //   { text: "Typeform Style", path: "/create-forms/typeform" },
-      //   { text: "Conversational Form", path: "/create-forms/conversational" },
-      // ],
     },
   ];
 
@@ -297,7 +325,7 @@ const Sidebar = ({ collapsed }) => {
           Everything
         </div>
         <div className="flex items-center justify-between px-4 py-2 text-sm font-semibold text-gray-600">
-          <span>Team Space</span>
+          <span>Domain</span>
           {!collapsed && (
             <button
               ref={teamSpaceButtonRef}
@@ -312,26 +340,26 @@ const Sidebar = ({ collapsed }) => {
         {showImportMenu && <ImportMenu />}
         <div className="ml-4">
           <div className="flex items-center justify-between px-4 py-2 text-sm text-gray-600">
-            <span>Projects</span>
+            <span>JD List</span>
             {!collapsed && <AiOutlinePlus className="w-4 h-4" />}
           </div>
           <Link
             to="/project-2"
             className="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-200"
           >
-            Project 2
+            JD List 2
           </Link>
           <Link
             to="/project-1"
             className="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-200"
           >
-            Project 1
+            JD List 1
           </Link>
           <Link
             to="/project-notes"
             className="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-200"
           >
-            Project Notes
+            JD List Notes
           </Link>
         </div>
         <Link
